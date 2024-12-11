@@ -12,120 +12,125 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+
    private static final String ARQUIVO = "q3/1dados.txt";
    private final static int numMinDejogadores = 11;
    static Map<Player, Integer> ranking = new HashMap<Player, Integer>();
    static ArrayList<Player> Players = new ArrayList<>();
    static boolean maquinaGanhou = true;
-   static int  posi = 1;
-   
+   static int posi = 1;
+
    public static void main(String[] args) {
       menu();
    }
 
    static public void menu() {
       Scanner in = new Scanner(System.in);
+      
+      ArrayList<Integer> numerosEscolhidos = new ArrayList<>();
       System.out.println();
-         System.out.println("**     - JOGO DO DADO -      **");
-         System.out.println();
-         System.out.println();
-         System.out.println("   --------  Menu ---------   ");
-         System.out.println();
-         System.out.println("Digite o numero de jogadores");
-         int numDePlayers = in.nextInt();
+      System.out.println("**     - JOGO DO DADO -      **");
+      System.out.println();
+      System.out.println("Digite o numero de jogadores");
+      int numDePlayers = in.nextInt();
 
-         if (numDePlayers <= numMinDejogadores) {
-            Scanner in2 = new Scanner(System.in);
+      if (numDePlayers <= numMinDejogadores) {
+     
+         Scanner in2 = new Scanner(System.in);
+         for (int i = 0; i < numDePlayers; i++) {
+            System.out.println(" -------------------------- ");
+            System.out.println("Digite o nome do jogador " + (i + 1));
+            String nome = in2.nextLine();
+            System.out.println("Digite o valor do jogador " + (i + 1));
+            int valor = in2.nextInt();
+            in2.nextLine();
+            for (int j : numerosEscolhidos) { //verifca se alguem escolheu o mesmo numero
+               if (j == valor){
 
-            for (int i = 0; i < numDePlayers; i++) {
-               System.out.println(" -------------------------- ");
-               System.out.println("Digite o nome do jogador " + (i + 1));
-               String nome = in2.nextLine();
-               System.out.println("Digite o valor do jogador " + (i + 1));
-               int valor = in2.nextInt();
-               in2.nextLine();
-               Player p;
-               boolean jaTem = false;
-
-               //verifica se existe um jogador com esse nome;
-               for (Player player : Players) {
-                  if (player.getNome().equals(nome)) {
-                     jaTem = true;
-                     player.setValorEscolhido(valor); // seta o valor de um jogador ja existente
-                  }
-               }
                
-
-               if (!jaTem) {
-                  p = new Player(nome, valor);
-                  addPlayer(p);
-               }
-
-               // -
-
+               System.out.println("Escolha outro numero.");
+               valor = in2.nextInt();
             }
+            }
+            
+            Player p;
+            boolean jaTem = false;
+            numerosEscolhidos.add(valor) ;
 
-         
+            //verifica se existe um jogador com esse nome;
+            for (Player player : Players) {
+               if (player.getNome().equals(nome)) {
+                  jaTem = true;
+                  player.setValorEscolhido(valor); // seta o valor de um jogador ja existente
+               }
+            }
+            
 
-      } 
+            if (!jaTem) {
+               p = new Player(nome, valor);
+               addPlayer(p);
+            }
+         }
+         numerosEscolhidos.clear();
+
+      } else {
+         System.out.println("No maximo 11 jogadores!! ");
+         menu();
+      }
       jogarDado();
    }
 
-    public static void addPlayer(Player p) {
+   public static void addPlayer(Player p) {
       Players.add(p);
    }
 
-    public static void jogarDado() {
-       
+   public static void jogarDado() {
+
       Dado d = new Dado();
       d.jogarDado();
       d.getNumeroQueCaiu();
-      
+
       for (Player player : Players) {// verifica se alguem ganhou
          if (d.verificaValor(player.getValorEscolhido())) {
             player.setNumDeVitorias();
             System.out.println("Ganhador da rodada: " + player.getNome());
-            ranking.put(player, player.getNumDeVitorias());
+              ranking.put(player, player.getNumDeVitorias());
+            
             maquinaGanhou = false;
-            player.setValorEscolhido(0)
-            ;
+            player.setValorEscolhido(0);
          }
-         
 
       }
 
-
-
-      if (maquinaGanhou) {//verifica se maquina ganhou
-         int[] valores = {1,2,3,4,5,67,8,9,10,11,12};
-           Random n = new Random();
-        int valor = valores[n.nextInt(valores.length)];
-        if (d.verificaValor(valor)) {
+      if (maquinaGanhou) {// verifica se maquina ganhou
+         int[] valores = { 1, 2, 3, 4, 5, 67, 8, 9, 10, 11, 12 };
+         Random n = new Random();
+         int valor = valores[n.nextInt(valores.length)];
+         if (d.verificaValor(valor)) {
             System.out.println("A maquina Venceu a rodada;");
-            System.out.println("Numero escolhido: "+valor);
-        }
+            System.out.println("Numero escolhido: " + valor);
+         }
       }
-         System.out.println("DADO: "+d.getNumeroQueCaiu());
-         System.out.println();
-     
-
-
-      System.out.println("    - TOP RANK -    "); 
+      System.out.println("DADO: " + d.getNumeroQueCaiu());
+      System.out.println();
+      System.out.println("    - TOP RANK -    ");
       // Ordena >>>
-       Map<Player, Integer> rankingOrdenado = new LinkedHashMap<>();
-        ranking.entrySet().stream()
+      Map<Player, Integer> rankingOrdenado = new LinkedHashMap<>();
+      ranking.entrySet().stream()
             .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed()) // Ordena pelos valores decrescentemente
             .forEachOrdered(entry -> rankingOrdenado.put(entry.getKey(), entry.getValue()));
-
-
-
       // Imprime o rank
-      rankingOrdenado.forEach((player, valor) -> {
-         System.out.println("|"+posi+"º " + player.getNome() + " - Vitorias: " + valor);
-         
-         posi++;
-       
-      });
+      for (Map.Entry<Player, Integer> entry : rankingOrdenado.entrySet()) {
+        
+         System.out.println("|" + posi + "º " + entry.getKey().getNome() + " - Vitorias: " + entry.getValue());
+
+        if (posi == 5) {
+            break; // Sai do loop após os 5 primeiros
+        }
+        posi++;
+
+    
+      };
       Scanner in = new Scanner(System.in);
       System.out.println();
       System.out.println("Pressione ENTER");
@@ -135,18 +140,17 @@ public class Game {
 
    }
 
-     private static void salvarNoArquivo(Map<Player, Integer> map) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARQUIVO))) {
-            for (Map.Entry<Player, Integer> entrada : map.entrySet()) {
-                writer.write(entrada.getKey().getNome() + " - " + entrada.getValue());
-                writer.newLine();
-            }
-   
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        menu();
-    }
-   
+   private static void salvarNoArquivo(Map<Player, Integer> map) {
+      try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARQUIVO))) {
+         for (Map.Entry<Player, Integer> entrada : map.entrySet()) {
+            writer.write(entrada.getKey().getNome() + " - " + entrada.getValue());
+            writer.newLine();
+         }
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      menu();
+   }
 
 }

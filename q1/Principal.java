@@ -109,17 +109,17 @@ public class Principal {
         if (op == 1) {
             System.out.println("Digite a quantidade de botijoes:");
             qtdBotijao = in.nextInt();
-
             in.nextLine();
-
+            
         } else {
             Scanner in2 = new Scanner(System.in);
             System.out.println("Digite o novos endereço da entrega:");
             String enderecoAtualizado = in2.nextLine();
             pedido.setLocal(enderecoAtualizado);
+            System.out.println("Novo endereço: "+ enderecoAtualizado);
+
             System.out.println("Digite a quantidade de botijoes:");
             qtdBotijao = in.nextInt();
-          
 
         }
 
@@ -159,6 +159,8 @@ public class Principal {
             if (pedido.getCodigoPedido() == codigo) {
                 pedido.setStatusEntregue(true);
                 System.err.println("Entrega Confirmada!");
+            }else{
+                System.out.println("Pedido não localizado");
             }
             
         }

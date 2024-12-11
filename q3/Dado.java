@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Dado {
     private int numeroQueCaiu;
-   static final private int[] valores = {1,2,3,4,5,67,8,9,10,11,12}; 
+   static final private int[] valores = {1,2,3,4,5,6,7,8,9,10,11,12}; 
 
 
     public int getNumeroQueCaiu() {
@@ -20,7 +20,7 @@ public class Dado {
 
         System.out.println();
 
-         this.numeroQueCaiu = valor;
+        this.numeroQueCaiu = 5;
     }
 
 
